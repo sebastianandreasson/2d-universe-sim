@@ -6,12 +6,16 @@ const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin')
 module.exports = function override(config, env) {
   config.resolve.extensions.push('.wasm')
 
-  config.module.rules = config.module.rules.map((rule) => {
+  config.module.rules = [...config.module.rules.map((rule) => {
     if (!rule.oneOf) {
       return rule
     }
     rule.oneOf = [
       ...rule.oneOf.slice(0, -1),
+      {
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader' },
+      },
       {
         test: /\.(glsl|frag|vert)$/,
         exclude: [/node_modules/],
@@ -21,7 +25,7 @@ module.exports = function override(config, env) {
     ]
 
     return rule
-  })
+  })]
 
   config.module.rules.forEach((rule) => {
     ;(rule.oneOf || []).forEach((oneOf) => {

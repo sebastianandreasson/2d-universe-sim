@@ -12,11 +12,13 @@ class Root extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
-    import('./simulator/build').then((wasm) => {
-      const universe = wasm.Universe.new(
-        Math.floor(1920 / 10),
-        Math.floor(1080 / 10),
+  async componentDidMount() {
+    try {
+      let wasm = await import('./simulator/build')
+      console.log(wasm)
+      const universe = await wasm.Universe.new(
+        Math.floor(1920 / 15),
+        Math.floor(1080 / 15),
         0
       )
       this.setState({
@@ -24,7 +26,9 @@ class Root extends React.PureComponent {
         universe,
         canvas: document.getElementById('canvas'),
       })
-    })
+    } catch(e) {
+      console.error(e)
+    }
   }
 
   render() {

@@ -1,3 +1,5 @@
+#![feature(async_closure)]
+
 extern crate bracket_noise;
 extern crate cfg_if;
 extern crate js_sys;
@@ -7,6 +9,7 @@ extern crate web_sys;
 mod cell;
 mod element;
 mod physics;
+// mod pool;
 mod utils;
 
 use crate::bracket_noise::prelude::*;
@@ -14,8 +17,10 @@ use crate::cell::Cell;
 use crate::cell::Light;
 use crate::cell::EMPTY_CELL;
 use crate::physics::Physics;
+use crate::utils::get_pkg_js_uri;
 use element::Element;
 use wasm_bindgen::prelude::*;
+use wasm_mt_pool::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -52,6 +57,7 @@ pub struct Universe {
     time: u8,
     cells: Vec<Cell>,
     lights: Vec<Light>,
+    // pool: ThreadPool,
 }
 
 #[wasm_bindgen]
@@ -192,8 +198,7 @@ impl Universe {
         self.time = self.time.wrapping_add(1);
     }
 
-    pub fn new(width: i32, height: i32, generation: u8) -> Universe {
-        // let basic_multi: BasicMulti = BasicMulti::new();
+    pub async fn new(width: i32, height: i32, generation: u8) -> Universe {
         let mut noise = FastNoise::seeded(1);
         noise.set_noise_type(NoiseType::PerlinFractal);
         noise.set_fractal_type(FractalType::FBM);
@@ -201,10 +206,6 @@ impl Universe {
         noise.set_fractal_gain(0.6);
         noise.set_fractal_lacunarity(2.0);
         noise.set_frequency(2.5);
-        // let buffer: Vec<u32> = noise.iter().map(|x| *x as u32).collect();
-
-        // web_sys::console::log_1();
-        // web_sys::console::log_1(&"Hello, world!".into())
 
         let mut cells: Vec<Cell> = Vec::new();
 
@@ -229,6 +230,8 @@ impl Universe {
                 a: 0,
             })
             .collect();
+        // let pkg_js_uri = get_pkg_js_uri();
+        // let pool = ThreadPool::new(2, &pkg_js_uri).and_init().await.unwrap();
 
         Universe {
             width,
@@ -237,6 +240,7 @@ impl Universe {
             cells,
             lights,
             time: 0,
+            // pool,
         }
     }
 }
@@ -257,7 +261,7 @@ impl Universe {
     }
 
     fn update_cell(cell: Cell, physics: Physics) {
-        if cell.clock > physics.universe.generation {
+        if cell.clock == physics.universe.generation {
             return;
         }
 

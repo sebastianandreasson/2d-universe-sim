@@ -1,13 +1,8 @@
 use super::utils::*;
-// mod cell;
 
-// use Cell;
-
-// use std::cmp;
 use crate::cell::Cell;
 use crate::Physics;
 use crate::EMPTY_CELL;
-use std::mem;
 use wasm_bindgen::prelude::*;
 // use web_sys::console;
 

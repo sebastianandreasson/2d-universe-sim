@@ -2,10 +2,19 @@ import React, { useEffect, useState } from 'react'
 import reglBuilder from 'regl'
 import frag from './glsl/lit-element.glsl'
 import vert from './glsl/vertex.glsl'
+/* eslint-disable import/no-webpack-loader-syntax */
+import { startSky } from "./scripts/sky"
+// import SimulationWorker from 'worker-loader!./simulation.worker.js'
+import * as Comlink from 'comlink'
+
 // let fragmentShader = require('./glsl/element.glsl')
 // let vertexShader = require('./glsl/vertex.glsl')
 
-console.log(vert)
+// const webWorkers = [
+//   new SimulationWorker(),
+//   // new SimulationWorker(),
+// ]
+// let simulators = []
 
 const start = ({ canvas, universe, memory }) => {
   const regl = reglBuilder({
@@ -21,7 +30,6 @@ const start = ({ canvas, universe, memory }) => {
   let lights = new Uint8Array(memory.buffer, light_pointer, width * height * 4)
   const dataTexture = regl.texture({ width, height, data: cells })
   const lightTexture = regl.texture({ width, height, data: lights })
-  console.log(cells)
 
   const draw = regl({
     blend: {
@@ -83,6 +91,15 @@ const start = ({ canvas, universe, memory }) => {
 }
 
 let t = 0
+let sky;
+try {
+  sky = startSky(1920 / (1920 / 12) * 2);
+} catch (e) {
+  console.error(e);
+  sky = {
+    frame: () => {}
+  };
+}
 const App = ({ universe, memory, canvas }) => {
   console.log({ universe, memory, canvas })
   const [type, setType] = useState(2)
@@ -93,7 +110,6 @@ const App = ({ universe, memory, canvas }) => {
     const loop = () => {
       universe.tick()
       var dayTime = (t / 50) % 255
-      universe.tick()
       t += 1
 
       if (dayTime > 70 && dayTime < 170) {
@@ -102,6 +118,9 @@ const App = ({ universe, memory, canvas }) => {
       window.t = t
       universe.set_time(dayTime)
       render()
+      let skyTime = dayTime / 255;
+      window.skyTime = skyTime;
+      sky.frame(skyTime);
 
       requestAnimationFrame(loop)
     }
