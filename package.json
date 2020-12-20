@@ -7,9 +7,10 @@
     "glsl-hsv2rgb": "^1.0.0",
     "glsl-noise": "^0.0.0",
     "glsl-random": "^0.0.5",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-scripts": "4.0.1",
+    "recoil": "^0.1.2",
     "regl": "^2.0.1",
     "web-vitals": "^0.2.4"
   },
