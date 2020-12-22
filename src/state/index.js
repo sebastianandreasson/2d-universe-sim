@@ -6,6 +6,19 @@ export const universeState = atom({
   default: null,
 })
 
+export const universeSettingsState = atom({
+  key: 'universe-settings',
+  default: {
+    width: Math.floor(1920 / 15),
+    height: Math.floor(1080 / 15),
+    seed: 1,
+    octaves: 4,
+    gain: 0.5,
+    lacunarity: 2.0,
+    frequency: 0.01,
+  },
+})
+
 export const wasmState = atom({
   key: 'wasm',
   default: null,

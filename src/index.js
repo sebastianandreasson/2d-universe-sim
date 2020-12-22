@@ -1,30 +1,58 @@
 import React, { useEffect } from 'react'
-import { RecoilRoot, useRecoilState } from 'recoil'
+import { RecoilRoot, useRecoilState, useRecoilValue } from 'recoil'
 import ReactDOM from 'react-dom'
 import App from './App'
-import { universeState } from './state'
+import { universeSettingsState, universeState, wasmState } from './state'
+import 'antd/dist/antd.css'
 
 const Root = () => {
+  const [wasm, setWasm] = useRecoilState(wasmState)
   const [universe, setUniverse] = useRecoilState(universeState)
+  const settings = useRecoilValue(universeSettingsState)
+
   useEffect(() => {
     const run = async () => {
       try {
-        let wasm = await import('./simulator/build')
-        const u = await wasm.Universe.new(
-          Math.floor(1920 / 15),
-          Math.floor(1080 / 15),
-          0
-        )
-        setUniverse({
-          universe: u,
-          memory: wasm.wasm_memory(),
-        })
+        let _wasm = await import('./simulator/build')
+        setWasm(_wasm)
       } catch (e) {
         console.error(e)
       }
     }
     run()
   }, [])
+  useEffect(() => {
+    if (!wasm) return
+    const universeSettings = wasm.UniverseSettings.new(
+      settings.seed,
+      settings.octaves,
+      settings.gain,
+      settings.lacunarity,
+      settings.frequency
+    )
+    const u = wasm.Universe.new(
+      settings.width,
+      settings.height,
+      universeSettings,
+      universeSettings.seed
+    )
+    setUniverse({
+      universe: u,
+      memory: wasm.wasm_memory(),
+    })
+  }, [wasm])
+
+  useEffect(() => {
+    if (!universe) return
+    const universeSettings = wasm.UniverseSettings.new(
+      settings.seed,
+      settings.octaves,
+      settings.gain,
+      settings.lacunarity,
+      settings.frequency
+    )
+    universe.universe.regenerate(universeSettings)
+  }, [universe, settings])
 
   if (!universe) {
     return <div>Loading...</div>

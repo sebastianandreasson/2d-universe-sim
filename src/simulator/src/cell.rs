@@ -38,6 +38,9 @@ impl Cell {
   pub fn blocked_light(&self) -> f32 {
     self.element.blocked_light()
   }
+  pub fn overwrite(&mut self, element: Element) {
+    self.element = element;
+  }
 }
 
 pub static EMPTY_CELL: Cell = Cell {

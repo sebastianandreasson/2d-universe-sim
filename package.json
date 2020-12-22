@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^4.9.4",
     "comlink": "^4.3.0",
     "glsl-hsv2rgb": "^1.0.0",
     "glsl-noise": "^0.0.0",
@@ -12,6 +13,7 @@
     "react-scripts": "4.0.1",
     "recoil": "^0.1.2",
     "regl": "^2.0.1",
+    "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

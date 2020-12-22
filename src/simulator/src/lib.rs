@@ -9,6 +9,7 @@ extern crate web_sys;
 mod cell;
 mod element;
 mod physics;
+mod settings;
 // mod pool;
 mod utils;
 
@@ -17,6 +18,8 @@ use crate::cell::Cell;
 use crate::cell::Light;
 use crate::cell::EMPTY_CELL;
 use crate::physics::Physics;
+use crate::settings::NoiseGenerator;
+use crate::settings::UniverseSettings;
 use crate::utils::get_pkg_js_uri;
 use element::Element;
 use wasm_bindgen::prelude::*;
@@ -57,6 +60,7 @@ pub struct Universe {
     time: u8,
     cells: Vec<Cell>,
     lights: Vec<Light>,
+    settings: UniverseSettings,
     // pool: ThreadPool,
 }
 
@@ -198,31 +202,15 @@ impl Universe {
         self.time = self.time.wrapping_add(1);
     }
 
-    pub async fn new(width: i32, height: i32, generation: u8) -> Universe {
-        let mut noise = FastNoise::seeded(1);
-        noise.set_noise_type(NoiseType::PerlinFractal);
-        noise.set_fractal_type(FractalType::FBM);
-        noise.set_fractal_octaves(4);
-        noise.set_fractal_gain(0.6);
-        noise.set_fractal_lacunarity(2.0);
-        noise.set_frequency(2.5);
-
+    pub fn new(width: i32, height: i32, settings: UniverseSettings, generation: u8) -> Universe {
         let mut cells: Vec<Cell> = Vec::new();
-
         for y in 0..height {
             for x in 0..width {
-                let value =
-                    noise.get_noise((x as f32) / width as f32, 10.0 + (y as f32) / height as f32);
-                // web_sys::console::log_u32();
-                if value < 0.00025 {
-                    cells.push(Cell::new(Element::Ground));
-                } else {
-                    cells.push(EMPTY_CELL);
-                }
+                cells.push(EMPTY_CELL);
             }
         }
 
-        let lights: Vec<Light> = (0..width * height)
+        let lights: Vec<Light> = (0..(width * height))
             .map(|_i| Light {
                 sun: 0,
                 sparkle: 0,
@@ -240,7 +228,27 @@ impl Universe {
             cells,
             lights,
             time: 0,
+            settings,
             // pool,
+        }
+    }
+
+    pub fn regenerate(&mut self, settings: UniverseSettings) {
+        let noise = NoiseGenerator::new(settings).noise;
+
+        for y in 0..self.height {
+            for x in 0..self.width {
+                let value = noise.get_noise(
+                    (x as f32) / self.width as f32,
+                    10.0 + (y as f32) / self.height as f32,
+                );
+                let i = self.get_index(x, y);
+                if value < 0.025 {
+                    self.cells[i].overwrite(Element::Ground);
+                } else {
+                    self.cells[i].overwrite(Element::Empty);
+                }
+            }
         }
     }
 }
