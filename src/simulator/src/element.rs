@@ -13,7 +13,7 @@ pub enum Element {
   Empty = 0,
   Ground = 1,
   Water = 2,
-  Sand = 3,
+  Dirt = 3,
   Grass = 4,
 }
 
@@ -22,7 +22,7 @@ impl Element {
     match self {
       Element::Empty => {}
       Element::Ground => {}
-      Element::Sand => {}
+      Element::Dirt => {}
       Element::Grass => {}
       Element::Water => update_water(cell, physics),
     }
@@ -34,13 +34,13 @@ impl Element {
         Element::Water => 1.0,
         Element::Ground => 30.0,
         Element::Grass => 20.0,
-        Element::Sand => 10.0,
+        Element::Dirt => 10.0,
       })
       / 100.0
   }
 }
 
-pub fn update_water(cell: Cell, mut phys: Physics) {
+pub fn update_water(mut cell: Cell, mut phys: Physics) {
   let dx = rand_dir();
   let dx1 = phys.get(dx, 1);
   let dx0 = phys.get(dx, 0);
@@ -61,4 +61,5 @@ pub fn update_water(cell: Cell, mut phys: Physics) {
     phys.set(0, 0, EMPTY_CELL);
     phys.set(-dx, 0, cell);
   }
+  // cell.alpha = 1;
 }

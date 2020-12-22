@@ -32,8 +32,6 @@ void main() {
   vec2 sampleCoord = textCoord + (noise_2d / (resolution / 2.));
 
   vec4 data = texture2D(dataTexture, textCoord);
-  // vec4 dataSample = texture2D(dataTexture, sampleCoord);
-
   vec4 lightCell = texture2D(lightTexture, textCoord);
 
   float lightValue = lightCell.r;
@@ -59,14 +57,23 @@ void main() {
     saturation = 0.1;
     lightness = 0.1;
     a = 0.175;
-  } else if (type == 1) { // Sand
-    hue = 0.1;
-    saturation = 0.4;
-    lightness = 1.0 - energy * 0.5;
+  } else if (type == 1) { // Ground
+    hue = 0.05;
+    saturation = 0.1;
+    lightness = 0.5 - energy * 0.5;
   } else if (type == 2) { // Water
     hue = 0.58;
     saturation = 0.6;
     lightness = 0.5 + energy * 0.25 + noise * 0.1;
+    a = 0.4;
+  } else if (type == 3) { // Dirt
+    hue = 0.09;
+    saturation = 0.45;
+    lightness = 0.5 - energy * 0.5;
+  } else if (type == 4) { // Grass
+    hue = 0.25;
+    saturation = 0.6;
+    lightness = 0.5;
     a = 0.4;
   }
   lightness *= 0.85 + cos(skyTime * PI2) * 0.2;

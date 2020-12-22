@@ -11,10 +11,10 @@ export const universeSettingsState = atom({
   default: {
     width: Math.floor(1920 / 15),
     height: Math.floor(1080 / 15),
-    seed: 1,
+    seed: 2,
     octaves: 4,
     gain: 0.5,
-    lacunarity: 2.0,
+    lacunarity: 2.5,
     frequency: 1.0,
   },
 })

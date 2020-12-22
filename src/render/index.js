@@ -13,7 +13,7 @@ export const start = ({ canvas, universe, memory }) => {
 
   const width = universe.width()
   const height = universe.height()
-  let cell_pointer = universe.cells()
+  let cell_pointer = universe.pixels()
   let light_pointer = universe.lights()
   let cells = new Uint8Array(memory.buffer, cell_pointer, width * height * 4)
   let lights = new Uint8Array(memory.buffer, light_pointer, width * height * 4)
@@ -41,7 +41,7 @@ export const start = ({ canvas, universe, memory }) => {
       t: ({ tick }) => tick,
       skyTime: () => (window.t ? window.t : 0),
       dataTexture: () => {
-        cell_pointer = universe.cells()
+        cell_pointer = universe.pixels()
         cells = new Uint8Array(memory.buffer, cell_pointer, width * height * 4)
         return dataTexture({ width, height, data: cells })
       },

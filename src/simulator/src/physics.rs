@@ -1,3 +1,4 @@
+use crate::cell::Force;
 use crate::Cell;
 use crate::Element;
 use crate::Universe;
@@ -18,9 +19,10 @@ impl<'a> Physics<'a> {
     if nx < 0 || nx > self.universe.width - 1 || ny < 0 || ny > self.universe.height - 1 {
       return Cell {
         element: Element::Ground,
-        velocity: 0,
+        light: 0,
         alpha: 1,
         clock: self.universe.generation,
+        force: Force::new(),
       };
     }
     return self.universe.get_cell(nx, ny);

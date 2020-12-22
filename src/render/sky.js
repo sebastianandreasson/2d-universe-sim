@@ -229,7 +229,6 @@ class WebGL {
 
     let shader = this.shader
     let time = WebGL.getTime() - this.time0
-    let dt = time - this.timePreviousFrame
     this.timePreviousFrame = time
 
     gl.clear(gl.DEPTH_BUFFER_BIT)
@@ -288,7 +287,7 @@ class WebGL {
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       WebGL.showLogProgram(gl, program)
-      throw `Failed to link shader!`
+      throw new Error(`Failed to link shader!`)
     }
 
     program.uniformLocation = (gl, name) => gl.getUniformLocation(program, name)
@@ -303,9 +302,9 @@ class WebGL {
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       let type =
-        shaderType == gl.VERTEX_SHADER ? 'vertex shader' : 'fragment shader'
+        shaderType === gl.VERTEX_SHADER ? 'vertex shader' : 'fragment shader'
       WebGL.showLog(gl, shader)
-      throw `Failed to compile ${type}`
+      throw new Error(`Failed to compile ${type}`)
     }
     return shader
   }
