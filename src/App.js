@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import Canvas from './components/Canvas'
 import PainterControls from './components/PainterControls'
 import WorldControls from './components/WorldControls'
+import PositionControls from './components/PositionControls'
 
 const Container = styled.div`
   display: flex;
@@ -47,6 +48,7 @@ const App = () => {
       <Controls>
         <PainterControls />
         <WorldControls />
+        <PositionControls />
       </Controls>
     </Container>
   )

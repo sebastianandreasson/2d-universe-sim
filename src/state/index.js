@@ -15,7 +15,15 @@ export const universeSettingsState = atom({
     octaves: 4,
     gain: 0.5,
     lacunarity: 2.0,
-    frequency: 0.01,
+    frequency: 1.0,
+  },
+})
+
+export const positionState = atom({
+  key: 'position',
+  default: {
+    x: 0,
+    y: 0,
   },
 })
 

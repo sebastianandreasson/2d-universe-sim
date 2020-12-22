@@ -19,6 +19,7 @@ use crate::cell::Light;
 use crate::cell::EMPTY_CELL;
 use crate::physics::Physics;
 use crate::settings::NoiseGenerator;
+use crate::settings::Position;
 use crate::settings::UniverseSettings;
 use crate::utils::get_pkg_js_uri;
 use element::Element;
@@ -233,16 +234,16 @@ impl Universe {
         }
     }
 
-    pub fn regenerate(&mut self, settings: UniverseSettings) {
+    pub fn regenerate(&mut self, settings: UniverseSettings, position: Position) {
         let noise = NoiseGenerator::new(settings).noise;
 
         for y in 0..self.height {
             for x in 0..self.width {
-                let value = noise.get_noise(
-                    (x as f32) / self.width as f32,
-                    10.0 + (y as f32) / self.height as f32,
-                );
                 let i = self.get_index(x, y);
+
+                let x_off = ((x as f32) + position.x as f32) / self.width as f32;
+                let y_off = (10.0 + (y as f32) + position.y as f32) / self.height as f32;
+                let value = noise.get_noise(x_off, y_off);
                 if value < 0.025 {
                     self.cells[i].overwrite(Element::Ground);
                 } else {

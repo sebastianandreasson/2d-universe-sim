@@ -2,6 +2,15 @@ import { useEffect, useCallback } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { canvasState, painterState, universeState } from '../state'
 
+const clickInsideUI = (x, y) => {
+  const width = window.innerWidth
+
+  if (x >= width - 200) {
+    return true
+  }
+  return false
+}
+
 export const usePainter = () => {
   const painter = useRecoilValue(painterState)
   const canvas = useRecoilValue(canvasState)
@@ -9,6 +18,7 @@ export const usePainter = () => {
 
   const onPaint = useEffect(() => {
     const handleClick = (event) => {
+      if (clickInsideUI(event.clientX, event.clientY)) return
       const width = universe.width()
       const height = universe.height()
       const boundingRect = canvas.getBoundingClientRect()

@@ -31,6 +31,26 @@ impl UniverseSettings {
   }
 }
 
+#[wasm_bindgen]
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Position {
+  pub x: i32,
+  pub y: i32,
+}
+
+#[wasm_bindgen]
+impl Position {
+  pub fn new(x: i32, y: i32) -> Position {
+    Position { x, y }
+  }
+
+  pub fn set(&mut self, x: i32, y: i32) {
+    self.x = x;
+    self.y = y;
+  }
+}
+
 pub struct NoiseGenerator {
   pub noise: FastNoise,
 }
