@@ -2,10 +2,7 @@ import React from 'react'
 import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { universeSettingsState } from '../state'
-import { InputNumber, Select } from 'antd'
-import { ELEMENTS } from '../state/constants'
-
-const { Option } = Select
+import { InputNumber } from 'antd'
 
 const Container = styled.div`
   width: 100%;

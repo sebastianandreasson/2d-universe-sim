@@ -13,7 +13,6 @@ export const useCanvas = () => {
       let screen_height = window.innerHeight
 
       canvas.style = `width: ${screen_width}px; height: ${screen_height}px;`
-      console.log(canvas.style)
     }
 
     resize()
@@ -24,7 +23,7 @@ export const useCanvas = () => {
 
   useEffect(() => {
     setCanvas(document.getElementById('canvas'))
-  }, [])
+  }, [setCanvas])
 
   return canvas
 }

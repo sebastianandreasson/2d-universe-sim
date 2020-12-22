@@ -1,4 +1,4 @@
-import { atom, selector } from 'recoil'
+import { atom } from 'recoil'
 import { ELEMENTS } from './constants'
 
 export const universeState = atom({

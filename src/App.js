@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 /* eslint-disable import/no-webpack-loader-syntax */
 // import SimulationWorker from 'worker-loader!./simulation.worker.js'
 import { renderLoop } from './render'
@@ -12,6 +12,7 @@ import Canvas from './components/Canvas'
 import PainterControls from './components/PainterControls'
 import WorldControls from './components/WorldControls'
 import PositionControls from './components/PositionControls'
+import { useRegenerateUniverse } from './hooks/regenerateUniverse'
 
 const Container = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ const App = () => {
   const { universe, memory } = useRecoilValue(universeState)
   const canvas = useCanvas()
   usePainter()
+  useRegenerateUniverse()
 
   useEffect(() => {
     if (canvas) {
@@ -40,7 +42,7 @@ const App = () => {
         canvas,
       })
     }
-  }, [canvas])
+  }, [canvas, memory, universe])
 
   return (
     <Container>

@@ -1,5 +1,5 @@
-import { useEffect, useCallback } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useEffect } from 'react'
+import { useRecoilValue } from 'recoil'
 import { canvasState, painterState, universeState } from '../state'
 
 const clickInsideUI = (x, y) => {

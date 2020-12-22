@@ -61,7 +61,6 @@ pub struct Universe {
     time: u8,
     cells: Vec<Cell>,
     lights: Vec<Light>,
-    settings: UniverseSettings,
     // pool: ThreadPool,
 }
 
@@ -203,7 +202,7 @@ impl Universe {
         self.time = self.time.wrapping_add(1);
     }
 
-    pub fn new(width: i32, height: i32, settings: UniverseSettings, generation: u8) -> Universe {
+    pub fn new(width: i32, height: i32, generation: u8) -> Universe {
         let mut cells: Vec<Cell> = Vec::new();
         for y in 0..height {
             for x in 0..width {
@@ -229,7 +228,6 @@ impl Universe {
             cells,
             lights,
             time: 0,
-            settings,
             // pool,
         }
     }
