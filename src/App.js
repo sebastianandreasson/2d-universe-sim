@@ -5,7 +5,7 @@ import { renderLoop } from './render'
 import { usePainter } from './hooks/paint'
 import { useCanvas } from './hooks/canvas'
 import { useRecoilValue } from 'recoil'
-import { universeState } from './state'
+import { universeState, simulationOnState } from './state'
 import styled from 'styled-components'
 
 import Canvas from './components/Canvas'
@@ -13,6 +13,7 @@ import PainterControls from './components/PainterControls'
 import WorldControls from './components/WorldControls'
 import PositionControls from './components/PositionControls'
 import { useRegenerateUniverse } from './hooks/regenerateUniverse'
+import SimulationControls from './components/SimulationControls'
 
 const Container = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ const Controls = styled.div`
 
 const App = () => {
   const { universe, memory } = useRecoilValue(universeState)
+  const simulationOn = useRecoilValue(simulationOnState)
   const canvas = useCanvas()
   usePainter()
   useRegenerateUniverse()
@@ -40,9 +42,10 @@ const App = () => {
         universe,
         memory,
         canvas,
+        simulationOn,
       })
     }
-  }, [canvas, memory, universe])
+  }, [canvas, memory, universe, simulationOn])
 
   return (
     <Container>
@@ -51,6 +54,7 @@ const App = () => {
         <PainterControls />
         <WorldControls />
         <PositionControls />
+        <SimulationControls />
       </Controls>
     </Container>
   )

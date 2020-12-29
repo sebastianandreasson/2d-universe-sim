@@ -79,7 +79,7 @@ export const start = ({ canvas, universe, memory }) => {
   }
 }
 
-export const renderLoop = ({ universe, memory, canvas }) => {
+export const renderLoop = ({ universe, memory, canvas, simulationOn }) => {
   let sky
   try {
     sky = startSky((1920 / (1920 / 12)) * 2)
@@ -93,7 +93,7 @@ export const renderLoop = ({ universe, memory, canvas }) => {
   const render = start({ universe, canvas, memory })
 
   const loop = () => {
-    universe.tick()
+    if (simulationOn) universe.tick()
     var dayTime = (t / 50) % 255
     t += 1
 

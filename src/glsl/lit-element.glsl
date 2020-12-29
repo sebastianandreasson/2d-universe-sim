@@ -57,20 +57,25 @@ void main() {
     saturation = 0.1;
     lightness = 0.1;
     a = 0.175;
-  } else if (type == 1) { // Ground
-    hue = 0.05;
-    saturation = 0.1;
-    lightness = 0.5 - energy * 0.5;
-  } else if (type == 2) { // Water
+  } else if (type == 1) { // Water
     hue = 0.58;
     saturation = 0.6;
     lightness = 0.5 + energy * 0.25 + noise * 0.1;
     a = 0.4;
-  } else if (type == 3) { // Dirt
+  } else if (type == 2) { // Foam
+    hue = 0.1;
+    saturation = 0.01;
+    lightness = 0.5 + energy * 0.25 + noise * 0.1;
+    a = 0.4;
+  } else if (type == 10) { // Rock
+    hue = 0.05;
+    saturation = 0.1;
+    lightness = 0.5 - energy * 0.5;
+  } else if (type == 11) { // Dirt
     hue = 0.09;
     saturation = 0.45;
     lightness = 0.5 - energy * 0.5;
-  } else if (type == 4) { // Grass
+  } else if (type == 12) { // Grass
     hue = 0.25;
     saturation = 0.6;
     lightness = 0.5;

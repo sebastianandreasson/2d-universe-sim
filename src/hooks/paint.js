@@ -31,7 +31,7 @@ export const usePainter = () => {
       const canvasLeft = (event.clientX - boundingRect.left) * scaleX
       const canvasTop = (event.clientY - boundingRect.top) * scaleY
 
-      const x = Math.min(Math.floor(canvasLeft), width - 1)
+      const x = Math.min(Math.floor(canvasLeft), width - 1) - 67
       const y = Math.min(Math.floor(canvasTop), height - 1)
 
       universe.paint(x, y, painter.brushSize, painter.type)

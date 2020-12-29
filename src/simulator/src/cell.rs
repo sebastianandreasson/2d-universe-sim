@@ -1,4 +1,6 @@
 use crate::element::Element;
+use crate::element::ParticleElement;
+use crate::utils::rand_dir;
 use crate::Physics;
 use wasm_bindgen::prelude::*;
 
@@ -15,16 +17,29 @@ pub struct Light {
 #[wasm_bindgen]
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Particle {
+  pub element: ParticleElement,
+  pub light: u8,
+  pub alpha: u8,
+}
+
+#[wasm_bindgen]
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Force {
-  pub value: u8,
-  pub direction: u8,
+  pub value: i32,
+  pub direction: i32,
 }
 
 impl Force {
   pub fn new() -> Force {
+    DEFAULT_FORCE
+  }
+
+  pub fn splash_force() -> Force {
     Force {
-      value: 0,
-      direction: 0,
+      value: 2,
+      direction: rand_dir(),
     }
   }
 }
@@ -38,6 +53,7 @@ pub struct Cell {
   pub alpha: u8,
   pub clock: u8,
   pub force: Force,
+  pub velocity: u8,
 }
 
 #[wasm_bindgen]
@@ -53,11 +69,22 @@ pub struct Pixel {
 impl Cell {
   pub fn new(element: Element) -> Cell {
     Cell {
-      element: element,
+      element,
       light: 75,
       alpha: 1,
       clock: 0,
       force: Force::new(),
+      velocity: 1,
+    }
+  }
+  pub fn cell_for_element(element: Element, generation: u8) -> Cell {
+    Cell {
+      element,
+      light: 75,
+      alpha: 1,
+      clock: 0,
+      force: Force::new(),
+      velocity: 0,
     }
   }
 
@@ -85,13 +112,16 @@ impl Cell {
   }
 }
 
+pub static DEFAULT_FORCE: Force = Force {
+  value: 1,
+  direction: 0,
+};
+
 pub static EMPTY_CELL: Cell = Cell {
   element: Element::Empty,
   light: 75,
   alpha: 1,
   clock: 0,
-  force: Force {
-    value: 0,
-    direction: 0,
-  },
+  force: DEFAULT_FORCE,
+  velocity: 0,
 };

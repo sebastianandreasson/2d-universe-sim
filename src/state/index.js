@@ -11,7 +11,7 @@ export const universeSettingsState = atom({
   default: {
     width: Math.floor(1920 / 15),
     height: Math.floor(1080 / 15),
-    seed: 2,
+    seed: 1,
     octaves: 4,
     gain: 0.5,
     lacunarity: 2.5,
@@ -41,6 +41,11 @@ export const painterState = atom({
   key: 'painter',
   default: {
     type: ELEMENTS.Water,
-    brushSize: 20,
+    brushSize: 10,
   },
+})
+
+export const simulationOnState = atom({
+  key: 'simulation-switch',
+  default: true,
 })

@@ -17,6 +17,7 @@ use crate::bracket_noise::prelude::*;
 use crate::cell::Cell;
 use crate::cell::Force;
 use crate::cell::Light;
+use crate::cell::Particle;
 use crate::cell::Pixel;
 use crate::cell::EMPTY_CELL;
 use crate::physics::Physics;
@@ -63,7 +64,7 @@ pub struct Universe {
     time: u8,
     cells: Vec<Cell>,
     lights: Vec<Light>,
-    // pool: ThreadPool,
+    particles: Vec<Particle>, // pool: ThreadPool,
 }
 
 #[wasm_bindgen]
@@ -163,6 +164,9 @@ impl Universe {
     pub fn lights(&self) -> *const Light {
         self.lights.as_ptr()
     }
+    pub fn particles(&self) -> *const Particle {
+        self.particles.as_ptr()
+    }
 
     pub fn paint(&mut self, x: i32, y: i32, size: i32, element: Element) {
         let radius = size / 2;
@@ -181,13 +185,7 @@ impl Universe {
                 }
                 let cell = self.get_cell(px, py);
                 if cell.element == Element::Empty || element == Element::Empty {
-                    self.cells[i] = Cell {
-                        element: element,
-                        light: 75,
-                        alpha: 1,
-                        clock: self.generation,
-                        force: Force::new(),
-                    }
+                    self.cells[i] = Cell::cell_for_element(element, self.generation);
                 }
             }
         }
@@ -216,6 +214,7 @@ impl Universe {
                 a: 0,
             })
             .collect();
+        let particles: Vec<Particle> = Vec::new();
         // let pkg_js_uri = get_pkg_js_uri();
         // let pool = ThreadPool::new(2, &pkg_js_uri).and_init().await.unwrap();
 
@@ -225,14 +224,23 @@ impl Universe {
             generation,
             cells,
             lights,
+            particles,
             time: 0,
             // pool,
         }
     }
 
     pub fn regenerate(&mut self, settings: UniverseSettings, position: Position) {
+        self.generation = 0;
         let noise = NoiseGenerator::new(settings).noise;
-        let mut prevValue: f32 = 0.0;
+        let mut prev_value: f32 = 0.0;
+        let mut cells: Vec<Cell> = Vec::new();
+        for _ in 0..self.height {
+            for _ in 0..self.width {
+                cells.push(EMPTY_CELL);
+            }
+        }
+        self.cells = cells;
 
         for x in 0..self.width {
             for y in 0..self.height {
@@ -241,24 +249,34 @@ impl Universe {
                 let x_off = ((x as f32) + position.x as f32) / self.width as f32;
                 let y_off = (10.0 + (y as f32) + position.y as f32) / self.height as f32;
                 let value = noise.get_noise(x_off, y_off);
+                // log_f64(value as f64);
 
                 if value < 0.02 {
-                    if prevValue > 0.001 {
+                    if prev_value > 0.001 {
                         self.cells[i].overwrite(Element::Grass);
                         self.cells[i].light = 10;
-                    } else if prevValue > -0.2 {
+                    } else if prev_value > -0.2 {
                         self.cells[i].overwrite(Element::Dirt);
                         self.cells[i].light = 10;
                     } else {
-                        self.cells[i].overwrite(Element::Ground);
+                        self.cells[i].overwrite(Element::Rock);
                     }
                 } else {
                     self.cells[i].overwrite(Element::Empty);
                 }
 
-                prevValue = value;
+                prev_value = value;
             }
         }
+        self.lights = (0..(self.width * self.height))
+            .map(|_i| Light {
+                sun: 0,
+                sparkle: 0,
+                b: 0,
+                a: 0,
+            })
+            .collect();
+        self.calculate_light();
     }
 }
 
