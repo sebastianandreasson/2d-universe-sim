@@ -1,5 +1,4 @@
 use crate::element::Element;
-use crate::element::ParticleElement;
 use crate::element::PixelElement;
 use crate::utils::rand_dir;
 use crate::Physics;
@@ -14,45 +13,6 @@ pub struct Light {
   pub b: u8,
   pub a: u8,
 }
-
-#[wasm_bindgen]
-#[repr(C)]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Particle {
-  pub element: ParticleElement,
-  pub force: Force,
-  pub clock: u8,
-  pub alpha: u8,
-}
-
-impl Particle {
-  pub fn new(element: ParticleElement, generation: u8) -> Particle {
-    Particle {
-      element,
-      force: Force::splash_force(),
-      clock: generation,
-      alpha: 100,
-    }
-  }
-  pub fn update(&self, physics: Physics) {
-    self.element.update(*self, physics);
-  }
-  pub fn display(&self) -> Pixel {
-    Pixel {
-      element: PixelElement::from_particle_element(self.element),
-      light: 100,
-      tmp: 0,
-      alpha: self.alpha,
-    }
-  }
-}
-
-pub static EMPTY_PARTICLE: Particle = Particle {
-  element: ParticleElement::Empty,
-  force: DEFAULT_FORCE,
-  clock: 0,
-  alpha: 0,
-};
 
 #[wasm_bindgen]
 #[repr(C)]
@@ -113,7 +73,7 @@ impl Cell {
       element,
       light: 75,
       alpha: 1,
-      clock: 0,
+      clock: generation,
       force: Force::new(),
       velocity: 0,
     }

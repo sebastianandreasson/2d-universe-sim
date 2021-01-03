@@ -21,11 +21,15 @@ const WorldControls = () => {
       [key]: value,
     })
 
-  const input = (type, value) => {
+  const input = (type, value, step = 1) => {
     return (
       <>
         <span>{type}</span>
-        <InputNumber value={value} onChange={(v) => onChange(type, v)} />
+        <InputNumber
+          value={value}
+          onChange={(v) => onChange(type, v)}
+          step={step}
+        />
       </>
     )
   }
@@ -35,9 +39,9 @@ const WorldControls = () => {
       <span>World</span>
       {input('seed', settings.seed)}
       {input('octaves', settings.octaves)}
-      {input('gain', settings.gain)}
-      {input('lacunarity', settings.lacunarity)}
-      {input('frequency', settings.frequency)}
+      {input('gain', settings.gain, 0.1)}
+      {input('lacunarity', settings.lacunarity, 0.1)}
+      {input('frequency', settings.frequency, 0.1)}
     </Container>
   )
 }

@@ -1,4 +1,3 @@
-use crate::cell::EMPTY_PARTICLE;
 use crate::Cell;
 use crate::Element;
 use crate::Particle;

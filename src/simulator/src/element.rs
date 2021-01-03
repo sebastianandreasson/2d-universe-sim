@@ -1,7 +1,7 @@
 use super::utils::*;
-use crate::cell::EMPTY_PARTICLE;
+use crate::particle::EMPTY_PARTICLE;
 // use crate::log_u32;
-use crate::Particle;
+use crate::particle::Particle;
 
 use crate::cell::Cell;
 use crate::Physics;

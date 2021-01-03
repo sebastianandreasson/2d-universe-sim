@@ -8,6 +8,7 @@ extern crate web_sys;
 
 mod cell;
 mod element;
+mod particle;
 mod physics;
 mod settings;
 // mod pool;
@@ -15,20 +16,20 @@ mod utils;
 
 use crate::cell::Cell;
 use crate::cell::Light;
-use crate::cell::Particle;
 use crate::cell::Pixel;
 use crate::cell::EMPTY_CELL;
-use crate::cell::EMPTY_PARTICLE;
+use crate::particle::Particle;
+use crate::particle::EMPTY_PARTICLE;
 use crate::physics::Physics;
 use crate::settings::NoiseGenerator;
 use crate::settings::Position;
 use crate::settings::UniverseSettings;
-use crate::utils::get_pkg_js_uri;
+// use crate::utils::get_pkg_js_uri;
 use crate::utils::rand_dir;
 use element::Element;
 use element::ParticleElement;
 use wasm_bindgen::prelude::*;
-use wasm_mt_pool::prelude::*;
+// use wasm_mt_pool::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -145,8 +146,6 @@ impl Universe {
                 break;
             }
             let cell = self.get_cell(rx, ry);
-            let blocked_light =
-                (sunlight) * (1.0 - cell.blocked_light()) * ((r / ray_length) as f32) * 5.;
             sunlight = (sunlight) * cell.blocked_light();
 
             self.lights[idx].sun = sunlight as u8;
@@ -296,7 +295,11 @@ impl Universe {
                         self.cells[i].overwrite(Element::Rock);
                     }
                 } else {
-                    self.cells[i].overwrite(Element::Empty);
+                    if y as f32 >= (self.height as f32 * 0.8) {
+                        self.cells[i].overwrite(Element::Water);
+                    } else {
+                        self.cells[i].overwrite(Element::Empty);
+                    }
                 }
 
                 prev_value = value;
@@ -340,7 +343,7 @@ impl Universe {
     }
 
     fn update_cell(cell: Cell, physics: Physics) {
-        if cell.clock >= physics.universe.generation {
+        if cell.clock == physics.universe.generation {
             return;
         }
 
