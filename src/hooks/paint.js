@@ -21,20 +21,14 @@ export const usePainter = () => {
       if (clickInsideUI(event.clientX, event.clientY)) return
       const width = universe.width()
       const height = universe.height()
-      const boundingRect = canvas.getBoundingClientRect()
 
-      const scaleX =
-        canvas.width / Math.ceil(window.devicePixelRatio) / boundingRect.width
-      const scaleY =
-        canvas.height / Math.ceil(window.devicePixelRatio) / boundingRect.height
-
-      const canvasLeft = (event.clientX - boundingRect.left) * scaleX
-      const canvasTop = (event.clientY - boundingRect.top) * scaleY
-
-      const x = Math.min(Math.floor(canvasLeft), width - 1) - 67
-      const y = Math.min(Math.floor(canvasTop), height - 1)
+      const scaleX = width / canvas.getBoundingClientRect().width
+      const scaleY = height / canvas.getBoundingClientRect().height
+      const x = Math.floor(event.clientX * scaleX)
+      const y = Math.floor(event.clientY * scaleY)
 
       universe.paint(x, y, painter.brushSize, painter.type)
+      // universe.paint_particle(x, y)
     }
 
     window.addEventListener('mousedown', handleClick)

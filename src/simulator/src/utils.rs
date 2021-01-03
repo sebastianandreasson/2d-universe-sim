@@ -3,12 +3,14 @@ use js_sys::Function;
 use wasm_bindgen::JsValue;
 
 pub fn rand_int(n: i32) -> i32 {
-    (js_sys::Math::random() * n as f64) as i32
+    (js_sys::Math::random() * 1000 as f64) as i32
 }
 
-pub fn rand_dir() -> i32 {
-    let i = rand_int(1000);
-    (i % 3) - 1
+pub fn rand_dir() -> i8 {
+    if (js_sys::Math::random() as f64) > 0.5 {
+        return 1;
+    }
+    return -1;
 }
 
 pub fn run_js(js: &str) -> Result<JsValue, JsValue> {

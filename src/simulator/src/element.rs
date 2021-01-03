@@ -1,4 +1,5 @@
 use super::utils::*;
+use crate::cell::EMPTY_PARTICLE;
 // use crate::log_u32;
 use crate::Particle;
 
@@ -7,6 +8,35 @@ use crate::Physics;
 use crate::EMPTY_CELL;
 use wasm_bindgen::prelude::*;
 // use web_sys::console;
+
+#[wasm_bindgen]
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Eq)]
+pub enum PixelElement {
+  Empty = 0,
+  Water = 1,
+  Rock = 10,
+  Dirt = 11,
+  Grass = 12,
+}
+
+impl PixelElement {
+  pub fn from_element(element: Element) -> PixelElement {
+    match element {
+      Element::Empty => PixelElement::Empty,
+      Element::Rock => PixelElement::Rock,
+      Element::Dirt => PixelElement::Dirt,
+      Element::Grass => PixelElement::Grass,
+      Element::Water => PixelElement::Water,
+    }
+  }
+  pub fn from_particle_element(element: ParticleElement) -> PixelElement {
+    match element {
+      ParticleElement::Empty => PixelElement::Empty,
+      ParticleElement::Foam => PixelElement::Water,
+    }
+  }
+}
 
 #[wasm_bindgen]
 #[repr(u8)]
@@ -42,34 +72,17 @@ impl Element {
   }
 }
 
-pub fn update_particle(mut particle: Particle, mut phys: Physics) {
-  // let dir = cell.force.direction;
-  // cell.alpha = 0;
-  // if phys.get(dir, -1).element == Element::Empty {
-  //   phys.set(0, 0, EMPTY_CELL);
-  //   phys.set(dir, -1, cell);
-  // } else if phys.get(dir, -1).element > Element::Rock {
-  //   cell.force.direction = -cell.force.direction;
-  //   phys.set(0, 0, EMPTY_CELL);
-  //   phys.set(cell.force.direction, -1, cell);
-  // } else if phys.get(dir, 0).element > Element::Rock {
-  //   cell.force.direction = -cell.force.direction;
-  //   phys.set(0, 0, EMPTY_CELL);
-  //   phys.set(cell.force.direction, 0, cell);
-  // }
-}
-
 // pub fn test(mut cell: Cell, mut phys: Physics) -> Cell {
 //   EMPTY_CELL
 // }
 
 pub fn update_liquid(cell: Cell, mut phys: Physics) {
-  let mut dy: i32 = 0;
+  let mut dy: i8 = 0;
   if cell.velocity > 0 {
     for v in 1..cell.velocity {
-      dy = v as i32;
-      if phys.get(0, v as i32).element != Element::Empty {
-        dy = (v - 1) as i32;
+      dy = v as i8;
+      if phys.get(0, v as i8).element != Element::Empty {
+        dy = (v - 1) as i8;
         break;
       }
     }
@@ -95,6 +108,10 @@ pub fn update_liquid(cell: Cell, mut phys: Physics) {
     phys.set(0, 0, EMPTY_CELL);
     phys.set(-dx, dy, cell);
   }
+  if dx1.element == Element::Water && cell.velocity > 5 {
+    phys.set(0, 0, EMPTY_CELL);
+    phys.set_particle(dx, dy, Particle::new(ParticleElement::Foam, cell.clock));
+  }
 }
 
 #[wasm_bindgen]
@@ -103,4 +120,29 @@ pub fn update_liquid(cell: Cell, mut phys: Physics) {
 pub enum ParticleElement {
   Empty = 0,
   Foam = 1,
+}
+
+impl ParticleElement {
+  pub fn update(&self, particle: Particle, physics: Physics) {
+    match self {
+      ParticleElement::Empty => {}
+      ParticleElement::Foam => update_particle(particle, physics),
+    }
+  }
+}
+
+pub fn update_particle(particle: Particle, mut phys: Physics) {
+  let mut dir = particle.force.direction;
+
+  if particle.force.value == 0 {
+    phys.set_particle(0, 0, EMPTY_PARTICLE);
+    phys.set(0, 0, Cell::new(Element::Water));
+    return;
+  }
+
+  phys.set_particle(0, 0, EMPTY_PARTICLE);
+  if phys.get(dir, -1).element > Element::Rock {
+    dir = -dir;
+  }
+  phys.set_particle(dir, -1, particle);
 }

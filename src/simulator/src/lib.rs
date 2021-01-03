@@ -13,19 +13,20 @@ mod settings;
 // mod pool;
 mod utils;
 
-use crate::bracket_noise::prelude::*;
 use crate::cell::Cell;
-use crate::cell::Force;
 use crate::cell::Light;
 use crate::cell::Particle;
 use crate::cell::Pixel;
 use crate::cell::EMPTY_CELL;
+use crate::cell::EMPTY_PARTICLE;
 use crate::physics::Physics;
 use crate::settings::NoiseGenerator;
 use crate::settings::Position;
 use crate::settings::UniverseSettings;
 use crate::utils::get_pkg_js_uri;
+use crate::utils::rand_dir;
 use element::Element;
+use element::ParticleElement;
 use wasm_bindgen::prelude::*;
 use wasm_mt_pool::prelude::*;
 
@@ -70,11 +71,21 @@ pub struct Universe {
 #[wasm_bindgen]
 impl Universe {
     pub fn tick(&mut self) {
-        self.generation = self.generation.wrapping_add(1);
         for x in (0..self.width).rev() {
             for y in (0..self.height).rev() {
+                if self.generation % 2 == 0 {
+                    continue;
+                }
                 let cell = self.get_cell(x, y);
-
+                let particle = self.get_particle(x, y);
+                Universe::update_particle(
+                    particle,
+                    Physics {
+                        universe: self,
+                        x,
+                        y,
+                    },
+                );
                 Universe::update_cell(
                     cell,
                     Physics {
@@ -86,6 +97,7 @@ impl Universe {
             }
         }
         self.calculate_light();
+        self.generation = self.generation.wrapping_add(1);
     }
 
     pub fn calculate_light(&mut self) {
@@ -164,11 +176,25 @@ impl Universe {
     pub fn lights(&self) -> *const Light {
         self.lights.as_ptr()
     }
-    pub fn particles(&self) -> *const Particle {
-        self.particles.as_ptr()
+    pub fn particles(&self) -> *const Pixel {
+        return self
+            .particles
+            .iter()
+            .map(|&p| p.display())
+            .collect::<Vec<Pixel>>()
+            .as_ptr();
     }
 
     pub fn paint(&mut self, x: i32, y: i32, size: i32, element: Element) {
+        if size == 1 {
+            let i = self.get_index(x, y);
+            let cell = self.get_cell(x, y);
+            if cell.element == Element::Empty || element == Element::Empty {
+                self.cells[i] = Cell::cell_for_element(element, self.generation);
+            }
+            return;
+        }
+
         let radius = size / 2;
         for dx in -radius..radius + 1 {
             for dy in -radius..radius + 1 {
@@ -188,6 +214,14 @@ impl Universe {
                     self.cells[i] = Cell::cell_for_element(element, self.generation);
                 }
             }
+        }
+    }
+
+    pub fn paint_particle(&mut self, x: i32, y: i32) {
+        let i = self.get_index(x, y);
+        let cell = self.get_cell(x, y);
+        if cell.element == Element::Empty {
+            self.particles[i] = Particle::new(ParticleElement::Foam, self.generation);
         }
     }
 
@@ -214,7 +248,7 @@ impl Universe {
                 a: 0,
             })
             .collect();
-        let particles: Vec<Particle> = Vec::new();
+        let particles: Vec<Particle> = (0..(width * height)).map(|_i| EMPTY_PARTICLE).collect();
         // let pkg_js_uri = get_pkg_js_uri();
         // let pool = ThreadPool::new(2, &pkg_js_uri).and_init().await.unwrap();
 
@@ -277,6 +311,12 @@ impl Universe {
             })
             .collect();
         self.calculate_light();
+        self.particles = (0..(self.width * self.height))
+            .map(|_i| EMPTY_PARTICLE)
+            .collect();
+    }
+    pub fn debug() -> i8 {
+        return rand_dir();
     }
 }
 
@@ -294,13 +334,27 @@ impl Universe {
         let i = self.get_index(x, y);
         return self.cells[i];
     }
+    fn get_particle(&self, x: i32, y: i32) -> Particle {
+        let i = self.get_index(x, y);
+        return self.particles[i];
+    }
 
     fn update_cell(cell: Cell, physics: Physics) {
-        if cell.clock == physics.universe.generation {
+        if cell.clock >= physics.universe.generation {
             return;
         }
 
         cell.update(physics);
+    }
+
+    fn update_particle(particle: Particle, physics: Physics) {
+        if particle.element == ParticleElement::Empty
+            || particle.clock >= physics.universe.generation
+        {
+            return;
+        }
+
+        particle.update(physics);
     }
 }
 

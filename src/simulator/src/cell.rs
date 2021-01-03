@@ -1,5 +1,6 @@
 use crate::element::Element;
 use crate::element::ParticleElement;
+use crate::element::PixelElement;
 use crate::utils::rand_dir;
 use crate::Physics;
 use wasm_bindgen::prelude::*;
@@ -19,16 +20,46 @@ pub struct Light {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Particle {
   pub element: ParticleElement,
-  pub light: u8,
+  pub force: Force,
+  pub clock: u8,
   pub alpha: u8,
 }
+
+impl Particle {
+  pub fn new(element: ParticleElement, generation: u8) -> Particle {
+    Particle {
+      element,
+      force: Force::splash_force(),
+      clock: generation,
+      alpha: 100,
+    }
+  }
+  pub fn update(&self, physics: Physics) {
+    self.element.update(*self, physics);
+  }
+  pub fn display(&self) -> Pixel {
+    Pixel {
+      element: PixelElement::from_particle_element(self.element),
+      light: 100,
+      tmp: 0,
+      alpha: self.alpha,
+    }
+  }
+}
+
+pub static EMPTY_PARTICLE: Particle = Particle {
+  element: ParticleElement::Empty,
+  force: DEFAULT_FORCE,
+  clock: 0,
+  alpha: 0,
+};
 
 #[wasm_bindgen]
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Force {
-  pub value: i32,
-  pub direction: i32,
+  pub value: u8,
+  pub direction: i8,
 }
 
 impl Force {
@@ -60,10 +91,10 @@ pub struct Cell {
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Pixel {
-  pub element: Element,
+  pub element: PixelElement,
   pub light: u8,
-  pub alpha: u8,
   pub tmp: u8,
+  pub alpha: u8,
 }
 
 impl Cell {
@@ -104,7 +135,7 @@ impl Cell {
 
   pub fn display(&self) -> Pixel {
     Pixel {
-      element: self.element,
+      element: PixelElement::from_element(self.element),
       light: self.light,
       alpha: self.alpha,
       tmp: 0,

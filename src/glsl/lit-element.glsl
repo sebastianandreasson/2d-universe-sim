@@ -7,7 +7,7 @@ uniform vec2 resolution;
 uniform sampler2D backBuffer;
 uniform sampler2D dataTexture;
 uniform sampler2D lightTexture;
-uniform sampler2D spriteTexture;
+uniform sampler2D particleTexture;
 
 varying vec2 uv;
 const float PI2 = 2. * 3.14159265358979323846;
@@ -23,12 +23,19 @@ const float PI2 = 2. * 3.14159265358979323846;
 void main() {
   vec3 color;
   vec2 grid = floor(uv * (resolution / dpi));
+  vec2 textCoord = (uv * vec2(0.5, -0.5)) + vec2(0.5);
+
+  vec4 particleCell = texture2D(particleTexture, textCoord);
+  if (particleCell.a > 0.0) {
+    color = vec3(0.8, 0.9, 1.0);
+    gl_FragColor = vec4(color, 0.5);
+    return;
+  }
 
   float noise = snoise3(vec3(grid, t * 0.05));
   vec2 noise_2d = vec2(floor(0.5 + noise),
                        floor(0.5 + snoise3(vec3(grid, (t + 20.) * 0.05))));
 
-  vec2 textCoord = (uv * vec2(0.5, -0.5)) + vec2(0.5);
   vec2 sampleCoord = textCoord + (noise_2d / (resolution / 2.));
 
   vec4 data = texture2D(dataTexture, textCoord);

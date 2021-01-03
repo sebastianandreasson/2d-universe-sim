@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import styled from 'styled-components'
-import { simulationOnState, universeState } from '../state'
+import { simulationOnState, universeState, wasmState } from '../state'
 import { Button, Switch, Space } from 'antd'
 
 const Container = styled.div`
@@ -14,6 +14,7 @@ const Container = styled.div`
 
 const SimulationControls = () => {
   const { universe } = useRecoilValue(universeState)
+  const wasm = useRecoilValue(wasmState)
   const [simulationOn, setSimulationOn] = useRecoilState(simulationOnState)
 
   return (
@@ -24,9 +25,10 @@ const SimulationControls = () => {
         On
         <Switch
           onChange={() => setSimulationOn(!simulationOn)}
-          value={simulationOn}
+          checked={simulationOn}
         />
       </Space>
+      <Button onClick={() => console.log(wasm.Universe.debug())}>Debug</Button>
     </Container>
   )
 }

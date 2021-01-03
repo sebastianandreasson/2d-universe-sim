@@ -9,8 +9,8 @@ export const universeState = atom({
 export const universeSettingsState = atom({
   key: 'universe-settings',
   default: {
-    width: Math.floor(1920 / 15),
-    height: Math.floor(1080 / 15),
+    width: 192,
+    height: 108,
     seed: 1,
     octaves: 4,
     gain: 0.5,
@@ -41,7 +41,7 @@ export const painterState = atom({
   key: 'painter',
   default: {
     type: ELEMENTS.Water,
-    brushSize: 10,
+    brushSize: 5,
   },
 })
 

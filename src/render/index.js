@@ -15,10 +15,18 @@ export const start = ({ canvas, universe, memory }) => {
   const height = universe.height()
   let cell_pointer = universe.pixels()
   let light_pointer = universe.lights()
+  let particle_pointer = universe.lights()
   let cells = new Uint8Array(memory.buffer, cell_pointer, width * height * 4)
   let lights = new Uint8Array(memory.buffer, light_pointer, width * height * 4)
+  let particles = new Uint8Array(
+    memory.buffer,
+    particle_pointer,
+    width * height * 4
+  )
+  console.log(particles)
   const dataTexture = regl.texture({ width, height, data: cells })
   const lightTexture = regl.texture({ width, height, data: lights })
+  const particleTexture = regl.texture({ width, height, data: particles })
 
   const draw = regl({
     blend: {
@@ -55,6 +63,15 @@ export const start = ({ canvas, universe, memory }) => {
         )
 
         return lightTexture({ width, height, data: lights })
+      },
+      particleTexture: () => {
+        particle_pointer = universe.particles()
+        particles = new Uint8Array(
+          memory.buffer,
+          particle_pointer,
+          width * height * 4
+        )
+        return particleTexture({ width, height, data: particles })
       },
       resolution: ({ viewportWidth, viewportHeight }) => [
         viewportWidth,
