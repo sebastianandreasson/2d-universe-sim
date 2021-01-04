@@ -2,8 +2,15 @@ use cfg_if::cfg_if;
 use js_sys::Function;
 use wasm_bindgen::JsValue;
 
-pub fn rand_int(n: i32) -> i32 {
-    (js_sys::Math::random() * 1000 as f64) as i32
+pub fn rand_to(n: u8) -> u8 {
+    (js_sys::Math::random() * (n as f64)).floor() as u8
+}
+
+pub fn rand_dir_with_bias() -> i8 {
+    if (js_sys::Math::random() as f64) > 0.66 {
+        return 1;
+    }
+    return -1;
 }
 
 pub fn rand_dir() -> i8 {

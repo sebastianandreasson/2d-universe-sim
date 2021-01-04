@@ -1,5 +1,6 @@
 use crate::element::Element;
 use crate::element::PixelElement;
+use crate::rand_to;
 use crate::utils::rand_dir;
 use crate::Physics;
 use wasm_bindgen::prelude::*;
@@ -29,7 +30,7 @@ impl Force {
 
   pub fn splash_force() -> Force {
     Force {
-      value: 2,
+      value: 1 + rand_to(5),
       direction: rand_dir(),
     }
   }

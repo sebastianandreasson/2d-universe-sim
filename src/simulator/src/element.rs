@@ -88,13 +88,15 @@ pub fn update_liquid(cell: Cell, mut phys: Physics) {
     }
   }
 
-  let dx = rand_dir();
+  let mut falling = false;
+  let dx = rand_dir_with_bias();
   let dx0 = phys.get(dx, dy);
   let dx1 = phys.get(dx, dy + 1);
 
   if phys.get(0, dy + 1).element == Element::Empty {
     phys.set(0, 0, EMPTY_CELL);
     phys.set_and_inc_velocity(0, dy + 1, cell);
+    falling = true;
   } else if dx1.element == Element::Empty {
     phys.set(0, 0, dx1);
     phys.set(dx, dy + 1, cell);
@@ -108,7 +110,7 @@ pub fn update_liquid(cell: Cell, mut phys: Physics) {
     phys.set(0, 0, EMPTY_CELL);
     phys.set(-dx, dy, cell);
   }
-  if dx1.element == Element::Water && cell.velocity > 5 {
+  if dx1.element == Element::Water && falling == false && cell.velocity > 5 {
     phys.set(0, 0, EMPTY_CELL);
     phys.set_particle(dx, dy, Particle::new(ParticleElement::Foam, cell.clock));
   }

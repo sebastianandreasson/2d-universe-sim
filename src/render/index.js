@@ -5,7 +5,6 @@ import vert from '../glsl/vertex.glsl'
 
 let t = 0
 export const start = ({ canvas, universe, memory }) => {
-  console.log('regl', canvas)
   const regl = reglBuilder({
     canvas,
     attributes: { preserveDrawingBuffer: false },
@@ -99,7 +98,7 @@ export const start = ({ canvas, universe, memory }) => {
 export const renderLoop = ({ universe, memory, canvas, simulationOn }) => {
   let sky
   try {
-    sky = startSky((1920 / (1920 / 12)) * 2)
+    sky = startSky(universe.width())
   } catch (e) {
     console.error(e)
     sky = {

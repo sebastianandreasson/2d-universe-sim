@@ -24,10 +24,12 @@ use crate::physics::Physics;
 use crate::settings::NoiseGenerator;
 use crate::settings::Position;
 use crate::settings::UniverseSettings;
+use crate::utils::rand_to;
 // use crate::utils::get_pkg_js_uri;
 use crate::utils::rand_dir;
 use element::Element;
 use element::ParticleElement;
+use element::PixelElement;
 use wasm_bindgen::prelude::*;
 // use wasm_mt_pool::prelude::*;
 
@@ -66,7 +68,8 @@ pub struct Universe {
     time: u8,
     cells: Vec<Cell>,
     lights: Vec<Light>,
-    particles: Vec<Particle>, // pool: ThreadPool,
+    particles: Vec<Particle>,
+    sprites: Vec<Pixel>, // pool: ThreadPool,
 }
 
 #[wasm_bindgen]
@@ -175,6 +178,9 @@ impl Universe {
     pub fn lights(&self) -> *const Light {
         self.lights.as_ptr()
     }
+    pub fn sprites(&self) -> *const Pixel {
+        self.sprites.as_ptr()
+    }
     pub fn particles(&self) -> *const Pixel {
         return self
             .particles
@@ -248,6 +254,14 @@ impl Universe {
             })
             .collect();
         let particles: Vec<Particle> = (0..(width * height)).map(|_i| EMPTY_PARTICLE).collect();
+        let sprites: Vec<Pixel> = (0..(width * height))
+            .map(|_i| Pixel {
+                alpha: 0,
+                element: PixelElement::Empty,
+                light: 0,
+                tmp: 0,
+            })
+            .collect();
         // let pkg_js_uri = get_pkg_js_uri();
         // let pool = ThreadPool::new(2, &pkg_js_uri).and_init().await.unwrap();
 
@@ -258,6 +272,7 @@ impl Universe {
             cells,
             lights,
             particles,
+            sprites,
             time: 0,
             // pool,
         }
@@ -319,7 +334,7 @@ impl Universe {
             .collect();
     }
     pub fn debug() -> i8 {
-        return rand_dir();
+        return rand_to(5) as i8;
     }
 }
 

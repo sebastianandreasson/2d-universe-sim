@@ -69,11 +69,6 @@ void main() {
     saturation = 0.6;
     lightness = 0.5 + energy * 0.25 + noise * 0.1;
     a = 0.4;
-  } else if (type == 2) { // Foam
-    hue = 0.1;
-    saturation = 0.01;
-    lightness = 0.5 + energy * 0.25 + noise * 0.1;
-    a = 0.4;
   } else if (type == 10) { // Rock
     hue = 0.05;
     saturation = 0.1;
@@ -87,6 +82,11 @@ void main() {
     saturation = 0.6;
     lightness = 0.5;
     a = 0.4;
+  } else { // Empty || no match
+    hue = 0.1;
+    saturation = 0.1;
+    lightness = 0.1;
+    a = 0.0;
   }
   lightness *= 0.85 + cos(skyTime * PI2) * 0.2;
   lightness *= (0.975 + snoise2(floor(uv * resolution / dpi)) * 0.025);
