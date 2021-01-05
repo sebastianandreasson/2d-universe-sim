@@ -22,7 +22,6 @@ export const start = ({ canvas, universe, memory }) => {
     particle_pointer,
     width * height * 4
   )
-  console.log(particles)
   const dataTexture = regl.texture({ width, height, data: cells })
   const lightTexture = regl.texture({ width, height, data: lights })
   const particleTexture = regl.texture({ width, height, data: particles })

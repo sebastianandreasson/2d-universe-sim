@@ -44,7 +44,7 @@ export const painterState = atom({
   key: 'painter',
   default: {
     type: ELEMENTS.Water,
-    brushSize: 10,
+    brushSize: 5,
   },
 })
 
