@@ -1,13 +1,11 @@
 use super::utils::*;
-use crate::particle::EMPTY_PARTICLE;
-// use crate::log_u32;
 use crate::particle::Particle;
+use crate::particle::EMPTY_PARTICLE;
 
 use crate::cell::Cell;
 use crate::Physics;
 use crate::EMPTY_CELL;
 use wasm_bindgen::prelude::*;
-// use web_sys::console;
 
 #[wasm_bindgen]
 #[repr(u8)]

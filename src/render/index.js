@@ -12,19 +12,6 @@ export const start = ({ canvas, universe, memory }) => {
 
   const width = universe.width()
   const height = universe.height()
-  let cell_pointer = universe.pixels()
-  let light_pointer = universe.lights()
-  let particle_pointer = universe.lights()
-  let cells = new Uint8Array(memory.buffer, cell_pointer, width * height * 4)
-  let lights = new Uint8Array(memory.buffer, light_pointer, width * height * 4)
-  let particles = new Uint8Array(
-    memory.buffer,
-    particle_pointer,
-    width * height * 4
-  )
-  const dataTexture = regl.texture({ width, height, data: cells })
-  const lightTexture = regl.texture({ width, height, data: lights })
-  const particleTexture = regl.texture({ width, height, data: particles })
 
   const draw = regl({
     blend: {
@@ -46,37 +33,41 @@ export const start = ({ canvas, universe, memory }) => {
     uniforms: {
       t: ({ tick }) => tick,
       skyTime: () => (window.t ? window.t : 0),
-      dataTexture: () => {
-        cell_pointer = universe.pixels()
-        cells = new Uint8Array(memory.buffer, cell_pointer, width * height * 4)
-        return dataTexture({ width, height, data: cells })
-      },
-      lightTexture: () => {
-        light_pointer = universe.lights()
-
-        lights = new Uint8Array(
-          memory.buffer,
-          light_pointer,
-          width * height * 4
-        )
-
-        return lightTexture({ width, height, data: lights })
-      },
-      particleTexture: () => {
-        particle_pointer = universe.particles()
-        particles = new Uint8Array(
-          memory.buffer,
-          particle_pointer,
-          width * height * 4
-        )
-        return particleTexture({ width, height, data: particles })
-      },
+      dataTexture: () =>
+        regl.texture({
+          width,
+          height,
+          data: new Uint8Array(
+            memory.buffer,
+            universe.pixels(),
+            width * height * 4
+          ),
+        }),
+      lightTexture: () =>
+        regl.texture({
+          width,
+          height,
+          data: new Uint8Array(
+            memory.buffer,
+            universe.lights(),
+            width * height * 4
+          ),
+        }),
+      particleTexture: () =>
+        regl.texture({
+          width,
+          height,
+          data: new Uint8Array(
+            memory.buffer,
+            universe.particles(),
+            width * height * 4
+          ),
+        }),
       resolution: ({ viewportWidth, viewportHeight }) => [
         viewportWidth,
         viewportHeight,
       ],
-      dpi: 4,
-      // dpi: window.devicePixelRatio * 2,
+      dpi: window.devicePixelRatio * 2,
     },
     attributes: {
       position: [

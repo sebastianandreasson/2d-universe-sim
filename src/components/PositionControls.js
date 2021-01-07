@@ -6,10 +6,12 @@ import { InputNumber } from 'antd'
 
 const Container = styled.div`
   width: 100%;
-
   display: flex;
-
   flex-direction: column;
+
+  > div {
+    margin-top: 10px;
+  }
 `
 
 const PositionControls = () => {
@@ -32,7 +34,7 @@ const PositionControls = () => {
 
   return (
     <Container>
-      <span>Position</span>
+      <h2>Position</h2>
       {input('x', position.x)}
       {input('y', position.y)}
     </Container>

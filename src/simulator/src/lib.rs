@@ -11,7 +11,6 @@ mod element;
 mod particle;
 mod physics;
 mod settings;
-// mod pool;
 mod utils;
 
 use crate::cell::Cell;
@@ -25,40 +24,14 @@ use crate::settings::NoiseGenerator;
 use crate::settings::Position;
 use crate::settings::UniverseSettings;
 use crate::utils::rand_to;
-// use crate::utils::get_pkg_js_uri;
-use crate::utils::rand_dir;
 use element::Element;
 use element::ParticleElement;
 use element::PixelElement;
 use wasm_bindgen::prelude::*;
-// use wasm_mt_pool::prelude::*;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-#[wasm_bindgen]
-extern "C" {
-    // Use `js_namespace` here to bind `console.log(..)` instead of just
-    // `log(..)`
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_f64(a: f64);
-
-    // The `console.log` is quite polymorphic, so we can bind it with multiple
-    // signatures. Note that we need to use `js_name` to ensure we always call
-    // `log` in JS.
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_u32(a: u32);
-
-    // Multiple arguments too!
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_many(a: &str, b: &str);
-}
 
 #[wasm_bindgen]
 pub struct Universe {
@@ -107,7 +80,6 @@ impl Universe {
     pub fn calculate_light(&mut self) {
         let time = ((self.time as f32) / 255.) * std::f32::consts::PI * 2.;
 
-        // let time: f32 = 0.1;
         let mut dx = time.sin();
         let mut dy = time.cos();
 
@@ -262,8 +234,6 @@ impl Universe {
                 tmp: 0,
             })
             .collect();
-        // let pkg_js_uri = get_pkg_js_uri();
-        // let pool = ThreadPool::new(2, &pkg_js_uri).and_init().await.unwrap();
 
         Universe {
             width,
@@ -274,7 +244,6 @@ impl Universe {
             particles,
             sprites,
             time: 0,
-            // pool,
         }
     }
 

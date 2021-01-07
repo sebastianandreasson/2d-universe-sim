@@ -9,10 +9,12 @@ const { Option } = Select
 
 const Container = styled.div`
   width: 100%;
-
   display: flex;
-
   flex-direction: column;
+
+  > div {
+    margin-top: 10px;
+  }
 `
 
 const PainterControls = () => {
@@ -26,7 +28,8 @@ const PainterControls = () => {
 
   return (
     <Container>
-      <span>Painter</span>
+      <h2>Painter</h2>
+      <span>Element</span>
       <Select
         defaultValue={painter.type}
         onChange={(value) => onChange('type', value)}
@@ -37,6 +40,7 @@ const PainterControls = () => {
           </Option>
         ))}
       </Select>
+      <span>Brush size</span>
       <InputNumber
         value={painter.brushSize}
         onChange={(value) => onChange('brushSize', value)}

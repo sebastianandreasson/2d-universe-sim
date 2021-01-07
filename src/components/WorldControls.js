@@ -6,10 +6,12 @@ import { InputNumber } from 'antd'
 
 const Container = styled.div`
   width: 100%;
-
   display: flex;
-
   flex-direction: column;
+
+  > div {
+    margin-top: 10px;
+  }
 `
 
 const WorldControls = () => {
@@ -36,7 +38,7 @@ const WorldControls = () => {
 
   return (
     <Container>
-      <span>World</span>
+      <h2>World</h2>
       {input('seed', settings.seed)}
       {input('octaves', settings.octaves)}
       {input('gain', settings.gain, 0.1)}

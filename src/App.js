@@ -26,7 +26,14 @@ const Controls = styled.div`
   flex-direction: column;
 
   padding: 10px;
-  background-color: white;
+  background-color: #191516;
+  color: #c9daea;
+
+  h2 {
+    margin-top: 10px;
+    color: #c9daea;
+    text-align: center;
+  }
 `
 
 const App = () => {
