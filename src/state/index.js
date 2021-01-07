@@ -6,8 +6,9 @@ export const universeState = atom({
   default: null,
 })
 
+const aspectRatio = (window.innerWidth - 200) / window.innerHeight
 const WIDTH = 160
-const HEIGHT = Math.floor(WIDTH / 1.75510204082)
+const HEIGHT = Math.floor(WIDTH / aspectRatio)
 
 export const universeSettingsState = atom({
   key: 'universe-settings',
