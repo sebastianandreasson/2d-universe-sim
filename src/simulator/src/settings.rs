@@ -10,6 +10,7 @@ pub struct UniverseSettings {
   pub gain: f32,
   pub lacunarity: f32,
   pub frequency: f32,
+  pub water_level: f32,
 }
 
 #[wasm_bindgen]
@@ -20,6 +21,7 @@ impl UniverseSettings {
     gain: f32,
     lacunarity: f32,
     frequency: f32,
+    water_level: f32,
   ) -> UniverseSettings {
     UniverseSettings {
       seed,
@@ -27,6 +29,7 @@ impl UniverseSettings {
       gain,
       lacunarity,
       frequency,
+      water_level,
     }
   }
 }

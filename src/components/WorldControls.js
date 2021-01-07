@@ -2,7 +2,7 @@ import React from 'react'
 import { useRecoilState } from 'recoil'
 import styled from 'styled-components'
 import { universeSettingsState } from '../state'
-import { InputNumber } from 'antd'
+import { InputNumber, Slider } from 'antd'
 
 const Container = styled.div`
   width: 100%;
@@ -44,6 +44,14 @@ const WorldControls = () => {
       {input('gain', settings.gain, 0.1)}
       {input('lacunarity', settings.lacunarity, 0.1)}
       {input('frequency', settings.frequency, 0.1)}
+      water level
+      <Slider
+        min={0}
+        max={1}
+        step={0.05}
+        defaultValue={settings.water_level}
+        onChange={(v) => onChange('water_level', v)}
+      />
     </Container>
   )
 }

@@ -266,7 +266,6 @@ impl Universe {
                 let x_off = ((x as f32) + position.x as f32) / self.width as f32;
                 let y_off = (10.0 + (y as f32) + position.y as f32) / self.height as f32;
                 let value = noise.get_noise(x_off, y_off);
-                // log_f64(value as f64);
 
                 if value < 0.02 {
                     if prev_value > 0.001 {
@@ -279,7 +278,7 @@ impl Universe {
                         self.cells[i].overwrite(Element::Rock);
                     }
                 } else {
-                    if y as f32 >= (self.height as f32 * 0.8) {
+                    if y as f32 >= (self.height as f32 * settings.water_level) {
                         self.cells[i].overwrite(Element::Water);
                     } else {
                         self.cells[i].overwrite(Element::Empty);

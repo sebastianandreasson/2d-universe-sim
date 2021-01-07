@@ -44,14 +44,16 @@ const App = () => {
   useRegenerateUniverse()
 
   useEffect(() => {
+    let stop = () => {}
     if (canvas) {
-      renderLoop({
+      stop = renderLoop({
         universe,
         memory,
         canvas,
         simulationOn,
       })
     }
+    return stop
   }, [canvas, memory, universe, simulationOn])
 
   return (

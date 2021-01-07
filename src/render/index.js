@@ -86,6 +86,7 @@ export const start = ({ canvas, universe, memory }) => {
 }
 
 export const renderLoop = ({ universe, memory, canvas, simulationOn }) => {
+  let requestId
   let sky
   try {
     sky = startSky(universe.width())
@@ -113,7 +114,11 @@ export const renderLoop = ({ universe, memory, canvas, simulationOn }) => {
     window.skyTime = skyTime
     sky.frame(skyTime)
 
-    requestAnimationFrame(loop)
+    requestId = requestAnimationFrame(loop)
   }
   loop()
+
+  return () => {
+    cancelAnimationFrame(requestId)
+  }
 }

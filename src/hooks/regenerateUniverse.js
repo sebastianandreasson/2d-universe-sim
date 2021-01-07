@@ -21,7 +21,8 @@ export const useRegenerateUniverse = () => {
       settings.octaves,
       settings.gain,
       settings.lacunarity,
-      settings.frequency
+      settings.frequency,
+      1 - settings.water_level
     )
     universe.regenerate(universeSettings, pos)
   }, [wasm, universe, settings, position])

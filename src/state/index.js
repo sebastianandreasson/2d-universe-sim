@@ -19,6 +19,7 @@ export const universeSettingsState = atom({
     gain: 0.5,
     lacunarity: 2.5,
     frequency: 1.0,
+    water_level: 0.1,
   },
 })
 
